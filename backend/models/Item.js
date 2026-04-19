@@ -15,6 +15,7 @@ const itemSchema = new mongoose.Schema(
     readAt:       { type: Date,    default: null },
     isSaved:      { type: Boolean, default: false, index: true },
     displayOrder: { type: Number,  default: () => Math.random() },
+    youtubeId: { type: String, default: null },
   },
   { versionKey: false }
 );
