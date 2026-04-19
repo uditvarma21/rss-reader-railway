@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>RSS Reader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/feed.css" />
+  <link rel="stylesheet" href="/css/article.css" />
+  <link rel="stylesheet" href="/css/addFeed.css" />
+</head>
+<body>
+
+  <div id="page-feed"    class="page"></div>
+  <div id="page-article" class="page hidden"></div>
+  <div id="page-add"     class="page hidden"></div>
+
+  <nav id="bottom-nav">
+    <button class="nav-btn active" data-page="home" aria-label="Home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </button>
+
+    <button class="nav-btn" id="btn-nav-refresh" aria-label="Refresh Feeds">
+      <svg id="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 4 23 10 17 10"/>
+        <polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      <span>Refresh</span>
+    </button>
+
+    <button class="nav-btn" data-page="add" aria-label="Add Feed">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      <span>Add Feed</span>
+    </button>
+  </nav>
+
+  <div id="toast" aria-live="polite"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/state.js"></script>
+  <script src="/js/scrollTracker.js"></script>
+  <script src="/js/feedPage.js"></script>
+  <script src="/js/articlePage.js"></script>
+  <script src="/js/addFeedPage.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

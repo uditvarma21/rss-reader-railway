@@ -1,0 +1,244 @@
+/* ── Feed Page ───────────────────────────────────────────────────────────── */
+#page-feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#feed-header {
+  width: 100%;
+  max-width: var(--card-width);
+  padding: 24px 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#feed-header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+/* ── Card Container ──────────────────────────────────────────────────────── */
+#feed-container {
+  width: 100%;
+  max-width: var(--card-width);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0 0;
+}
+
+/* ── Card Base — flex column so actions always sit at the bottom ─────────── */
+.feed-card {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-card.is-read { opacity: var(--read-opacity); }
+.feed-card.is-read:hover,
+.feed-card.is-read:focus-within { opacity: 0.8; }
+
+/* ── Image Card ──────────────────────────────────────────────────────────── */
+/* No fixed height — aspect-ratio image + clamped text + actions = natural height */
+
+.card-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;   /* always square, scales to container width */
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.card-image-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.4s ease;
+}
+.feed-card:hover .card-image-wrap img { transform: scale(1.03); }
+
+/* Gradient overlay on image */
+.card-image-wrap::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 60%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.92) 100%);
+  pointer-events: none;
+}
+
+.card-source-over {
+  position: absolute;
+  bottom: 14px; left: 16px; z-index: 2;
+  font-size: 0.7rem; font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* Text section below image — overflow hidden to clip long content */
+.card-body {
+  padding: 14px 16px 8px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+/* ── Text-only Card ──────────────────────────────────────────────────────── */
+.feed-card.no-image {
+  height: var(--card-text-h);
+  background: var(--bg-card-alt);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.feed-card.no-image .card-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  padding: 20px 20px 14px;
+  background: transparent;
+}
+
+/* ── Card Source ─────────────────────────────────────────────────────────── */
+.card-source {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.07em;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.card-source::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  flex-shrink: 0;
+}
+
+/* ── Card Title ──────────────────────────────────────────────────────────── */
+.card-title {
+  font-size: 1.05rem; font-weight: 700;
+  line-height: 1.35; color: var(--text-primary);
+  margin-bottom: 8px; letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Card Description ────────────────────────────────────────────────────── */
+.card-desc {
+  font-size: 0.88rem; color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1; overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+.feed-card.no-image .card-desc { -webkit-line-clamp: 8; }
+
+/* ── Card Actions — always visible at bottom ─────────────────────────────── */
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 12px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  gap: 8px;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+.feed-card.no-image .card-actions { background: var(--bg-card-alt); }
+
+.btn-read-more {
+  font-size: 0.83rem; font-weight: 600;
+  color: var(--accent-blue);
+  padding: 8px 14px;
+  border-radius: var(--radius-btn);
+  background: rgba(74,158,255,0.1);
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+.btn-read-more:hover { background: rgba(74,158,255,0.2); }
+
+.btn-save {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.83rem; font-weight: 600;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  border-radius: var(--radius-btn);
+  background: rgba(255,255,255,0.05);
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+.btn-save svg { width: 15px; height: 15px; flex-shrink: 0; transition: fill var(--transition), stroke var(--transition); }
+.btn-save:hover { background: rgba(255,215,0,0.1); color: var(--saved-color); }
+.btn-save.saved { color: var(--saved-color); background: rgba(255,215,0,0.12); }
+.btn-save.saved svg { fill: var(--saved-color); stroke: var(--saved-color); }
+
+/* ── Saved Badge ─────────────────────────────────────────────────────────── */
+.card-badge-saved {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(0,0,0,0.7);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--saved-color);
+  letter-spacing: 0.05em; text-transform: uppercase;
+  pointer-events: none; display: none;
+}
+.feed-card.is-saved .card-badge-saved { display: block; }
+
+/* ── Shuffle Button ──────────────────────────────────────────────────────── */
+#btn-refresh {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.07);
+  color: var(--text-secondary);
+  font-size: 0.8rem; font-weight: 600;
+  transition: background var(--transition);
+  margin: 16px auto;
+}
+#btn-refresh:hover { background: rgba(255,255,255,0.13); }
+#btn-refresh svg { width: 15px; height: 15px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Tablet (≥ 768px) */
+@media (min-width: 768px) {
+  #feed-header,
+  #feed-container {
+    max-width: 600px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* Laptop (≥ 1024px) — 2-column grid */
+@media (min-width: 1024px) {
+  #feed-header { max-width: 992px; }
+  #feed-container {
+    max-width: 992px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    align-items: start;
+    padding: 8px 16px 0;
+  }
+}
+
+/* Wide desktop (≥ 1440px) — 3-column grid */
+@media (min-width: 1440px) {
+  #feed-header,
+  #feed-container { max-width: 1320px; }
+  #feed-container { grid-template-columns: repeat(3, 1fr); }
+}
