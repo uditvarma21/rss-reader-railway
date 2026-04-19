@@ -21,8 +21,17 @@ const parser = new Parser({
 });
 
 function extractYoutubeId(url) {
-  const match = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
-  return match ? match[1] : null;
+  if (!url) return null;
+  // Standard: youtube.com/watch?v=ID
+  const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) return watchMatch[1];
+  // Shorts: youtube.com/shorts/ID
+  const shortsMatch = url.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (shortsMatch) return shortsMatch[1];
+  // Short URL: youtu.be/ID
+  const shortUrlMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (shortUrlMatch) return shortUrlMatch[1];
+  return null;
 }
 // ── Image extraction (4-step priority) ───────────────────────────────────
 function extractImage(item) {
