@@ -15,6 +15,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/items/saved — only saved items (archive page)
+router.get('/saved', async (req, res) => {
+  try {
+    const Item = require('../models/Item');
+    const rawItems = await Item.find({ isSaved: true })
+      .sort({ fetchedAt: -1 })
+      .lean();
+    const items = rawItems.map(item => ({
+      ...item,
+      id:  String(item._id),
+      _id: undefined,
+    }));
+    res.json({ items });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get saved items' });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const item = await getItemById(req.params.id);
