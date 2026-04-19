@@ -36,7 +36,7 @@ const ArticlePage = (() => {
         ${item.youtubeId ? `
         <div id="youtube-player">
           <iframe
-            src="https://www.youtube.com/embed/${item.youtubeId}"
+            src="https://www.youtube.com/embed/${item.youtubeId}${item.originalUrl && item.originalUrl.includes('/shorts/') ? '?loop=1' : ''}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
