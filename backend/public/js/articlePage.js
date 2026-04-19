@@ -13,6 +13,20 @@ const ArticlePage = (() => {
       .replace(/javascript:/gi, '');
   }
 
+  function getYoutubeId(item) {
+  // Use stored youtubeId if available
+  if (item.youtubeId) return item.youtubeId;
+  // Otherwise extract from originalUrl on the fly
+  const url = item.originalUrl || '';
+  const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) return watchMatch[1];
+  const shortsMatch = url.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (shortsMatch) return shortsMatch[1];
+  const shortUrlMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (shortUrlMatch) return shortUrlMatch[1];
+  return null;
+}
+
   function render(item) {
     const hasImage = !!item.imageUrl;
     page.classList.toggle('no-hero', !hasImage);
@@ -33,10 +47,10 @@ const ArticlePage = (() => {
       <div id="article-body">
         <div id="article-source">${escapeHtml(item.feedTitle)}</div>
         <h1 id="article-title">${escapeHtml(item.title)}</h1>
-        ${item.youtubeId ? `
+        ${getYoutubeId(item) ? `
         <div id="youtube-player">
           <iframe
-            src="https://www.youtube.com/embed/${item.youtubeId}${item.originalUrl && item.originalUrl.includes('/shorts/') ? '?loop=1' : ''}"
+            src="https://www.youtube.com/embed/${getYoutubeId(item)}${(item.originalUrl || '').includes('/shorts/') ? '?loop=1' : ''}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
