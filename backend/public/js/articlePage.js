@@ -8,7 +8,7 @@ const ArticlePage = (() => {
     return html
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
-      .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+      .replace(/<iframe(?![^>]*youtube)[^>]*>[\s\S]*?<\/iframe>/gi, '')
       .replace(/on\w+="[^"]*"/gi, '')
       .replace(/javascript:/gi, '');
   }
@@ -33,6 +33,15 @@ const ArticlePage = (() => {
       <div id="article-body">
         <div id="article-source">${escapeHtml(item.feedTitle)}</div>
         <h1 id="article-title">${escapeHtml(item.title)}</h1>
+        ${item.youtubeId ? `
+        <div id="youtube-player">
+          <iframe
+            src="https://www.youtube.com/embed/${item.youtubeId}"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>` : ''}
         <div id="article-content">${sanitizeContent(item.fullContent || item.description || '')}</div>
         <div id="article-actions">
           <a id="btn-open-original" href="${escapeAttr(item.originalUrl)}" target="_blank" rel="noopener noreferrer">
