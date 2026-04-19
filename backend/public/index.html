@@ -17,6 +17,7 @@
   <div id="page-feed"    class="page"></div>
   <div id="page-article" class="page hidden"></div>
   <div id="page-add"     class="page hidden"></div>
+  <div id="page-saved"   class="page hidden"></div>
 
   <nav id="bottom-nav">
     <button class="nav-btn active" data-page="home" aria-label="Home">
@@ -36,6 +37,13 @@
       <span>Refresh</span>
     </button>
 
+        <button class="nav-btn" data-page="saved" aria-label="Saved">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>Saved</span>
+    </button>
+    
     <button class="nav-btn" data-page="add" aria-label="Add Feed">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -54,6 +62,7 @@
   <script src="/js/feedPage.js"></script>
   <script src="/js/articlePage.js"></script>
   <script src="/js/addFeedPage.js"></script>
+  <script src="/js/savedPage.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>
