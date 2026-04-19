@@ -19,6 +19,7 @@ const Router = (() => {
     if (currentPage === 'home')    FeedPage.unmount();
     if (currentPage === 'article') ArticlePage.unmount();
     if (currentPage === 'add')     AddFeedPage.unmount();
+    if (currentPage === 'saved')   SavedPage.unmount();
 
     currentPage = page;
     currentId   = id || null;
@@ -26,6 +27,7 @@ const Router = (() => {
     if (page === 'home')         { FeedPage.mount();       setActiveNav('home'); }
     else if (page === 'article') { ArticlePage.mount(id);  setActiveNav(null); }
     else if (page === 'add')     { AddFeedPage.mount();    setActiveNav('add'); }
+    else if (page === 'saved')   { SavedPage.mount();      setActiveNav('saved'); }
     else                         { go('home'); }
   }
 
