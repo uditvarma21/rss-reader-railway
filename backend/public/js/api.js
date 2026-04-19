@@ -25,6 +25,8 @@ const API = (() => {
     toggleSave: (id)  => request('PATCH',  `/items/${id}/save`),
     deleteItem: (id)  => request('DELETE', `/items/${id}`),
 
+    // Saved archive
+    getSaved: () => request('GET', '/items/saved'),
     // System
     fetchAll: () => request('POST', '/fetch-all'), // cron-job.org (needs SYSTEM_SECRET header)
     refresh:  () => request('POST', '/refresh'),   // nav button (no auth needed)
