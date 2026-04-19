@@ -20,6 +20,10 @@ const parser = new Parser({
   timeout: 10000,
 });
 
+function extractYoutubeId(url) {
+  const match = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
 // ── Image extraction (4-step priority) ───────────────────────────────────
 function extractImage(item) {
   // 1. media:content direct
@@ -90,7 +94,8 @@ async function fetchAllFeeds() {
           fullContent: extractFullContent(entry),
           imageUrl:    extractImage(entry),
           originalUrl,
-          publishedAt: entry.pubDate ? new Date(entry.pubDate) : new Date(),
+publishedAt: entry.pubDate ? new Date(entry.pubDate) : new Date(),
+youtubeId: extractYoutubeId(entry.link || entry.guid || ''),
         });
         totalAdded++;
       }
