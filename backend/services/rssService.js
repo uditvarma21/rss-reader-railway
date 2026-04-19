@@ -12,6 +12,7 @@ const parser = new Parser({
     item: [
       ['media:content',   'mediaContent',   { keepArray: false }],
       ['media:thumbnail', 'mediaThumbnail', { keepArray: false }],
+      ['media:group',     'mediaGroup',     { keepArray: false }],
       ['enclosure',       'enclosure'],
       ['content:encoded', 'contentEncoded'],
     ],
@@ -21,22 +22,42 @@ const parser = new Parser({
 
 // ── Image extraction (4-step priority) ───────────────────────────────────
 function extractImage(item) {
-  if (item.mediaContent?.['$']?.url)   return item.mediaContent['$'].url;
+  // 1. media:content direct
+  if (item.mediaContent?.['$']?.url) return item.mediaContent['$'].url;
+
+  // 2. media:thumbnail direct
   if (item.mediaThumbnail?.['$']?.url) return item.mediaThumbnail['$'].url;
+
+  // 3. YouTube wraps inside media:group
+  if (item.mediaGroup) {
+    const group = item.mediaGroup;
+    if (group['media:thumbnail']?.[0]?.['$']?.url)
+      return group['media:thumbnail'][0]['$'].url;
+    if (group['media:content']?.[0]?.['$']?.url)
+      return group['media:content'][0]['$'].url;
+  }
+
+  // 4. enclosure
   if (item.enclosure?.url) {
     const type = item.enclosure.type || '';
     if (type.startsWith('image/') || /\.(jpg|jpeg|png|gif|webp)/i.test(item.enclosure.url))
       return item.enclosure.url;
   }
+
+  // 5. first <img> in content HTML
   const html = item.contentEncoded || item.content || '';
   if (html) {
-    const $   = cheerio.load(html);
+    const $ = cheerio.load(html);
     const src = $('img').first().attr('src');
     if (src && src.startsWith('http')) return src;
   }
+
+  // 6. YouTube video ID fallback
+  const ytMatch = (item.link || item.guid || '').match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+
   return null;
 }
-
 function extractDescription(item) {
   const raw = item.contentSnippet || item.summary || item.content || '';
   return raw.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 300);
