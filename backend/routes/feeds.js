@@ -68,4 +68,20 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.patch('/:id/pin', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id || id === 'undefined') {
+      return res.status(400).json({ error: 'Invalid feed ID' });
+    }
+    const feed = await getFeedById(id);
+    if (!feed) return res.status(404).json({ error: 'Feed not found' });
+    await toggleFeedPin(id, !feed.isPinned);
+    res.json({ success: true, isPinned: !feed.isPinned });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to toggle pin' });
+  }
+});
+
 module.exports = router;
