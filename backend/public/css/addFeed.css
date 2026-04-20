@@ -96,3 +96,23 @@
   transition: background var(--transition);
 }
 .btn-delete-feed:hover { background: rgba(255,80,80,0.18); }
+
+.feed-list-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-pin-feed {
+  flex-shrink: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  font-size: 0.85rem;
+  transition: background var(--transition), opacity var(--transition);
+  opacity: 0.4;
+}
+
+.btn-pin-feed:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+.btn-pin-feed.pinned { opacity: 1; background: rgba(255,200,0,0.12); }
