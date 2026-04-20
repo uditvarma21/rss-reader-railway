@@ -1,6 +1,6 @@
 const express = require('express');
 const router  = express.Router();
-const { getAllFeeds, addFeed, deleteFeed } = require('../services/dbService');
+const { getAllFeeds, addFeed, deleteFeed, getFeedById, toggleFeedPin } = require('../services/dbService');
 const { fetchAllFeeds } = require('../services/rssService');
 
 // GET /api/feeds
