@@ -26,6 +26,10 @@ async function deleteFeed(id) {
   await Item.deleteMany({ feedId: String(id) });
 }
 
+async function toggleFeedPin(id, isPinned) {
+  await Feed.findByIdAndUpdate(id, { isPinned });
+}
+
 // ── Items ──────────────────────────────────────────────────────────────────
 
 async function itemExistsByUrl(originalUrl) {
@@ -99,7 +103,7 @@ async function deleteOldReadUnsavedItems() {
 }
 
 module.exports = {
-  getAllFeeds, getFeedById, addFeed, updateFeedLastFetched, deleteFeed,
-  itemExistsByUrl, addItem, getAllItemsShuffled, getItemById,
+  getAllFeeds, getFeedById, addFeed, updateFeedLastFetched, deleteFeed, 
+  toggleFeedPin, itemExistsByUrl, addItem, getAllItemsShuffled, getItemById,
   markItemRead, toggleItemSaved, deleteItem, deleteOldReadUnsavedItems,
 };
