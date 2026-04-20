@@ -6,6 +6,7 @@ const feedSchema = new mongoose.Schema(
     title:       { type: String, default: 'Unknown Feed' },
     addedAt:     { type: Date,   default: Date.now },
     lastFetched: { type: Date,   default: null },
+    isPinned: { type: Boolean, default: false },
   },
   { versionKey: false }
 );
