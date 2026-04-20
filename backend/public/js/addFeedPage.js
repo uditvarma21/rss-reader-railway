@@ -16,9 +16,15 @@ const AddFeedPage = (() => {
                 <span class="feed-list-item-title">${escapeHtml(f.title || 'Untitled')}</span>
                 <span class="feed-list-item-url">${escapeHtml(f.url)}</span>
               </div>
-              <button class="btn-delete-feed" data-id="${f.id}" data-action="delete-feed">Remove</button>
+              <div class="feed-list-item-actions">
+                <button class="btn-pin-feed ${f.isPinned ? 'pinned' : ''}" 
+                  data-id="${f.id}" data-action="pin-feed" 
+                  title="${f.isPinned ? 'Unpin feed' : 'Pin feed'}">
+                  📌
+                </button>
+                <button class="btn-delete-feed" data-id="${f.id}" data-action="delete-feed">Remove</button>
+              </div>
             </div>`).join('')}
-        </div>`;
 
       section.querySelectorAll('[data-action="delete-feed"]').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -28,6 +34,18 @@ const AddFeedPage = (() => {
             showToast('Feed removed');
             loadFeedsList();
           } catch (_) { showToast('Could not remove feed'); }
+        });
+      });
+
+      section.querySelectorAll('[data-action="pin-feed"]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try {
+            const res = await fetch(`/api/feeds/${btn.dataset.id}/pin`, { method: 'PATCH' });
+            const data = await res.json();
+            btn.classList.toggle('pinned', data.isPinned);
+            btn.title = data.isPinned ? 'Unpin feed' : 'Pin feed';
+            showToast(data.isPinned ? '📌 Feed pinned — items won\'t be deleted' : 'Feed unpinned');
+          } catch (_) { showToast('Could not pin feed'); }
         });
       });
     } catch (err) { console.warn('Could not load feeds list', err); }
