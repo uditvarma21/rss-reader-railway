@@ -115,5 +115,5 @@ async function deleteOldReadUnsavedItems() {
 module.exports = {
   getAllFeeds, getFeedById, addFeed, updateFeedLastFetched, deleteFeed,
   toggleFeedPin, itemExistsByUrl, addItem, getAllItemsShuffled, getItemById,
-  markItemRead,ToggleItemSaved, deleteItem, deleteOldReadUnsavedItems,
+  markItemRead, toggleItemSaved, deleteItem, deleteOldReadUnsavedItems,
 };
