@@ -43,13 +43,13 @@ async function addItem(itemData) {
 }
 
 async function getAllItemsShuffled() {
-  // Re-randomise display order for every unread item atomically
   await Item.updateMany(
     { isRead: false },
     [{ $set: { displayOrder: { $rand: {} } } }]
   );
 
-  const items = await Item.find({}).lean();
+  // Home feed only shows unread items — saved+read items go to saved page only
+  const items = await Item.find({ isRead: false }).lean();
 
   // Normalise _id → id for the frontend
   items.forEach(item => {
@@ -58,12 +58,8 @@ async function getAllItemsShuffled() {
   });
 
   // Group 0: unread | Group 1: saved+read | Group 2: read+unsaved
-  items.sort((a, b) => {
-    const ag = a.isRead ? (a.isSaved ? 1 : 2) : 0;
-    const bg = b.isRead ? (b.isSaved ? 1 : 2) : 0;
-    if (ag !== bg) return ag - bg;
-    return a.displayOrder - b.displayOrder;
-  });
+ // All items here are unread — just sort by random displayOrder
+  items.sort((a, b) => a.displayOrder - b.displayOrder);
 
   return items;
 }
