@@ -48,8 +48,51 @@ async function getAllItemsShuffled() {
     [{ $set: { displayOrder: { $rand: {} } } }]
   );
 
+  // Get pinned feed IDs so their items always show on home feed
+  const pinnedFeeds = await Feed.find({ isPinned: true }).select('_id');
+  const pinnedFeedIds = pinnedFeeds.map(f => String(f._id));
+
+  // Home feed shows:
+  // 1. All unread items
+  // 2. Saved items (read or unread)
+  // 3. Items from pinned feeds (read or unread)
+  const items = await Item.find({
+    $or: [
+      { isRead: false },
+      { isSaved: true },
+      { feedId: { $in: pinnedFeedIds } },
+    ]
+  }).lean();
+
+  items.forEach(item => {
+    item.id = String(item._id);
+    delete item._id;
+  });
+
+  // Group 0: unread | Group 1: saved+read or pinned+read | Group 2: everything else
+  items.sort((a, b) => {
+    const getGroup = (item) => {
+      if (!item.isRead) return 0;
+      if (item.isSaved || pinnedFeedIds.includes(item.feedId)) return 1;
+      return 2;
+    };
+    const ag = getGroup(a);
+    const bg = getGroup(b);
+    if (ag !== bg) return ag - bg;
+    return a.displayOrder - b.displayOrder;
+  });
+
+  return items;
+}
+
   // Home feed only shows unread items — saved+read items go to saved page only
-  const items = await Item.find({ isRead: false }).lean();
+  // Home feed: unread items + saved items (saved never disappear from home)
+  const items = await Item.find({
+    $or: [
+      { isRead: false },
+      { isSaved: true }
+    ]
+  }).lean();
 
   // Normalise _id → id for the frontend
   items.forEach(item => {
@@ -59,7 +102,13 @@ async function getAllItemsShuffled() {
 
   // Group 0: unread | Group 1: saved+read | Group 2: read+unsaved
  // All items here are unread — just sort by random displayOrder
-  items.sort((a, b) => a.displayOrder - b.displayOrder);
+ // Group 0: unread | Group 1: saved (read or unread)
+  items.sort((a, b) => {
+    const ag = a.isSaved && a.isRead ? 1 : 0;
+    const bg = b.isSaved && b.isRead ? 1 : 0;
+    if (ag !== bg) return ag - bg;
+    return a.displayOrder - b.displayOrder;
+  });
 
   return items;
 }
