@@ -53,7 +53,6 @@ async function getAllItemsShuffled() {
   const items = await Item.find({
     $or: [
       { isRead: false },
-      { isSaved: true },
       { feedId: { $in: pinnedFeedIds } },
     ]
   }).lean();
@@ -66,7 +65,7 @@ async function getAllItemsShuffled() {
   items.sort((a, b) => {
     const getGroup = (item) => {
       if (!item.isRead) return 0;
-      if (item.isSaved || pinnedFeedIds.includes(item.feedId)) return 1;
+      if (pinnedFeedIds.includes(item.feedId)) return 1;
       return 2;
     };
     const ag = getGroup(a);
