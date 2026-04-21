@@ -4,7 +4,6 @@ const Item = require('../models/Item');
 // ── Feeds ──────────────────────────────────────────────────────────────────
 
 async function getAllFeeds() {
-  // Return raw docs so rssService can access _id directly (String(feed._id))
   return Feed.find({}).sort({ addedAt: 1 }).lean();
 }
 
@@ -48,14 +47,9 @@ async function getAllItemsShuffled() {
     [{ $set: { displayOrder: { $rand: {} } } }]
   );
 
-  // Get pinned feed IDs so their items always show on home feed
   const pinnedFeeds = await Feed.find({ isPinned: true }).select('_id');
   const pinnedFeedIds = pinnedFeeds.map(f => String(f._id));
 
-  // Home feed shows:
-  // 1. All unread items
-  // 2. Saved items (read or unread)
-  // 3. Items from pinned feeds (read or unread)
   const items = await Item.find({
     $or: [
       { isRead: false },
@@ -69,7 +63,6 @@ async function getAllItemsShuffled() {
     delete item._id;
   });
 
-  // Group 0: unread | Group 1: saved+read or pinned+read | Group 2: everything else
   items.sort((a, b) => {
     const getGroup = (item) => {
       if (!item.isRead) return 0;
@@ -78,34 +71,6 @@ async function getAllItemsShuffled() {
     };
     const ag = getGroup(a);
     const bg = getGroup(b);
-    if (ag !== bg) return ag - bg;
-    return a.displayOrder - b.displayOrder;
-  });
-
-  return items;
-}
-
-  // Home feed only shows unread items — saved+read items go to saved page only
-  // Home feed: unread items + saved items (saved never disappear from home)
-  const items = await Item.find({
-    $or: [
-      { isRead: false },
-      { isSaved: true }
-    ]
-  }).lean();
-
-  // Normalise _id → id for the frontend
-  items.forEach(item => {
-    item.id = String(item._id);
-    delete item._id;
-  });
-
-  // Group 0: unread | Group 1: saved+read | Group 2: read+unsaved
- // All items here are unread — just sort by random displayOrder
- // Group 0: unread | Group 1: saved (read or unread)
-  items.sort((a, b) => {
-    const ag = a.isSaved && a.isRead ? 1 : 0;
-    const bg = b.isSaved && b.isRead ? 1 : 0;
     if (ag !== bg) return ag - bg;
     return a.displayOrder - b.displayOrder;
   });
@@ -148,7 +113,7 @@ async function deleteOldReadUnsavedItems() {
 }
 
 module.exports = {
-  getAllFeeds, getFeedById, addFeed, updateFeedLastFetched, deleteFeed, 
+  getAllFeeds, getFeedById, addFeed, updateFeedLastFetched, deleteFeed,
   toggleFeedPin, itemExistsByUrl, addItem, getAllItemsShuffled, getItemById,
-  markItemRead, toggleItemSaved, deleteItem, deleteOldReadUnsavedItems,
+  markItemRead,ToggleItemSaved, deleteItem, deleteOldReadUnsavedItems,
 };
